@@ -21,7 +21,15 @@ task :sues do
     config.access_token_secret = ENV["ACCESS_SECRET"]
   end
 
-  client.update match(food, /(Salads.*)Soups/m)
-  client.update match(food, /(Soups.*)Special/m)
-  client.update match(food, /(Special.*)$/m)
+  salads  = match(food, /(Salads.*)Soups/m)
+  soups   = match(food, /(Soups.*)Special/m)
+  special = match(food, /(Special.*)$/m)
+
+  [salads, soups, special].each do |item|
+    client.update item
+
+    RestClient.post ENV['SLACK_URL'], {
+      text: item
+    }.to_json, content_type: :json, accept: :json
+  end
 end
