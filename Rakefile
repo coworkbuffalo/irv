@@ -1,5 +1,8 @@
+require 'rubygems'
+require 'bundler'
 require 'open-uri'
-require 'nokogiri'
+
+Bundler.require
 
 desc "Scrape sue's special"
 task :sues do
@@ -11,7 +14,14 @@ task :sues do
     food.match(pattern)[1].gsub("\n", " ")
   end
 
-  puts match(food, /(Salads.*)Soups/m)
-  puts match(food, /(Soups.*)Special/m)
-  puts match(food, /(Special.*)$/m)
+  client = Twitter::REST::Client.new do |config|
+    config.consumer_key        = ENV["CONSUMER_KEY"]
+    config.consumer_secret     = ENV["CONSUMER_SECRET"]
+    config.access_token        = ENV["ACCESS_TOKEN"]
+    config.access_token_secret = ENV["ACCESS_SECRET"]
+  end
+
+  client.update match(food, /(Salads.*)Soups/m)
+  client.update match(food, /(Soups.*)Special/m)
+  client.update match(food, /(Special.*)$/m)
 end
