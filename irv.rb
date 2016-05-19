@@ -1,7 +1,10 @@
 require 'cgi'
 require 'open-uri'
+require 'json'
 
 class Irv < Sinatra::Application
+  enable :logging, :dump_errors, :raise_errors
+
   get '/' do
     'IRV!'
   end
@@ -39,8 +42,9 @@ class Irv < Sinatra::Application
   # actor_id:
   # 9444
   post '/kisi' do
+    payload = JSON.parse(request.body.read)
     RestClient.post ENV['SLACK_URL'], {
-      text: params['message']
+      text: payload['message']
     }.to_json, content_type: :json, accept: :json
   end
 end
