@@ -8,7 +8,7 @@ desc "Scrape sue's special"
 task :sues do
   url = "http://www.suesnydeli.com/?_escaped_fragment_=daily-specials/ccf6"
   doc = Nokogiri::HTML(open(url))
-  food = doc.css('#comp-ifnu3xbq').text.split("\n").select { |line| line =~ /\A\w/ }.join("\n")
+  food = doc.css('#hxxkv61w').text.split("\n").select { |line| line =~ /\A\w/ }.join("\n")
 
   def match(food, pattern)
     food.match(pattern)[1].gsub("\n", " ")
