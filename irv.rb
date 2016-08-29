@@ -51,8 +51,11 @@ class Irv < Sinatra::Application
   # app=secure-woodland-9775&user=example%40example.com&url=http%3A%2F%2Fsecure-woodland-9775.herokuapp.com&head=4f20bdd&head_long=4f20bdd&prev_head=&git_log=%20%20*%20Michael%20Friis%3A%20add%20bar&release=v7
   post '/heroku' do
     RestClient.post ENV['SLACK_URL'], {
-      text: "#{params['user']} deployed #{params['release']} / <https://github.com/qrush/desktime/commit/#{params['head']}|#{params['head']}> of <#{params['url']}|#{params['app']}>: #{params['git_log']}",
-      channel: '#mxdesk'
+      text: "#{params['user']} deployed #{params['release']} / <https://github.com/qrush/desktime/commit/#{params['head']}|#{params['head']}> of <#{params['url']}|#{params['app']}>",
+      channel: '#mxdesk',
+      attachments: [
+        { 'text' => params['git_log'] }
+      ]
     }.to_json, content_type: :json, accept: :json
   end
 end
