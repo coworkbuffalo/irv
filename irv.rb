@@ -50,8 +50,15 @@ class Irv < Sinatra::Application
 
   # app=secure-woodland-9775&user=example%40example.com&url=http%3A%2F%2Fsecure-woodland-9775.herokuapp.com&head=4f20bdd&head_long=4f20bdd&prev_head=&git_log=%20%20*%20Michael%20Friis%3A%20add%20bar&release=v7
   post '/heroku' do
-    RestClient.post ENV['SLACK_URL'], {
-      text: "#{params['user']} deployed #{params['release']} / <https://github.com/qrush/desktime/commit/#{params['head']}|#{params['head']}> of <#{params['url']}|#{params['app']}>: #{params['git_log']}",
+    notify ENV['SLACK_URL']
+    notify ENV['OTHER_SLACK_URL']
+  end
+
+  def notify(url)
+    RestClient.post url, {
+      username: 'irv',
+      icon_url: 'https://raw.githubusercontent.com/coworkbuffalo/irv/master/irv.jpg',
+      text: "#{params['user']} deployed #{params['release']} / <https://github.com/qrush/mxdesk/commit/#{params['head']}|#{params['head']}> of <#{params['url']}|#{params['app']}>: #{params['git_log']}",
       channel: '#mxdesk'
     }.to_json, content_type: :json, accept: :json
   end
